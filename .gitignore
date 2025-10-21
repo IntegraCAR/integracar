@@ -1,0 +1,13 @@
+# Ignorar arquivo de variáveis de ambiente
+.env
+
+# Ignorar arquivos Python compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar pastas e arquivos temporários
+*.swp
+*.swo
+.DS_Store
