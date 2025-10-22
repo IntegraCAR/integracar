@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IntegraCAR - Início</title>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .campus-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .campus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .campus-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: white;
+        }
+
+        .campus-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .campus-id {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .campus-name {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .empty-message::before {
+            content: "📍";
+            display: block;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats strong {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: white;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>🌿 IntegraCAR</h1>
+                <p class="subtitle">Sistema de Gestão de Análises de Processos</p>
+            </header>
+            <div class="campus-section">
+                <h2 class="section-title">📍 Campus Cadastrados</h2>
+                {% if campus and campus|length > 0 %}
+                <div class="stats">
+                    <p>Total de campus:
+                        <strong>{{ campus|length }}</strong>
+                    </p>
+                </div>
+                <div class="campus-grid">
+                    {% for c in campus %}
+                    <div class="campus-card">
+                        <div class="campus-id">ID: {{ c.cod_campus }}</div>
+                        <div class="campus-name">{{ c.nome_campus }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-message">
+                    Nenhum campus cadastrado no sistema.
+                </div>
+                {% endif %}
+            </div>
+            <footer>
+                <p>&copy; 2025 IntegraCAR - Sistema de Gestão Ambiental</p>
+            </footer>
+        </div>
+    </body>
+</html>
