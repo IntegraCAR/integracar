@@ -1,11 +1,16 @@
-# Ignorar arquivo de variáveis de ambiente
+# Arquivo de ambiente com credenciais
 .env
 
-# Ignorar arquivos Python compilados
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+.venv/
+venv/
+ENV/
 
 # Ignorar pastas e arquivos temporários
 *.swp
