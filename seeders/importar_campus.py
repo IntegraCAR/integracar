@@ -1,4 +1,4 @@
-from importar_csv import importar_csv
+from seeders.importar_csv import importar_csv
 from data.model.campus import Campus
 from data.repo import campus_repo
 
@@ -25,5 +25,5 @@ def importar_campus(caminho_arquivo):
     except Exception as e:
         print(f"Erro: {e}")
 
-caminho = "processos.csv"
+caminho = "seeders/processos.csv"
 importar_campus(caminho)

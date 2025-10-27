@@ -5,6 +5,7 @@ from typing import Optional
 class Usuario:
     cod_usuario: int
     cod_campus: Optional[int]
+    cod_orientador: Optional[int]
     nome_usuario: str
     role_usuario: str
     organizacao_usuario: str

@@ -13,41 +13,7 @@ VALUES (%s, %s, %s)
 RETURNING cod_processo;
 """
 
-ATUALIZAR = """
-UPDATE Processo
-SET codigo_edocs = %s,
-    numero_processo_florestal = %s,
-    codigo_empreendimento = %s
-WHERE cod_processo = %s;
-"""
-
 DELETAR = """
 DELETE FROM Processo
 WHERE cod_processo = %s;
-"""
-
-OBTER_POR_ID = """
-SELECT cod_processo, codigo_edocs, numero_processo_florestal, codigo_empreendimento
-FROM Processo
-WHERE cod_processo = %s;
-"""
-
-OBTER_TODOS = """
-SELECT cod_processo, codigo_edocs, numero_processo_florestal, codigo_empreendimento
-FROM Processo
-ORDER BY cod_processo DESC;
-"""
-
-BUSCAR_POR_EDOCS = """
-SELECT cod_processo, codigo_edocs, numero_processo_florestal, codigo_empreendimento
-FROM Processo
-WHERE codigo_edocs ILIKE %s
-ORDER BY cod_processo DESC;
-"""
-
-BUSCAR_POR_PROCESSO_FLORESTAL = """
-SELECT cod_processo, codigo_edocs, numero_processo_florestal, codigo_empreendimento
-FROM Processo
-WHERE numero_processo_florestal ILIKE %s
-ORDER BY cod_processo DESC;
 """

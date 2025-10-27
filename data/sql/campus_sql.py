@@ -11,32 +11,7 @@ VALUES (%s)
 RETURNING cod_campus;
 """
 
-ATUALIZAR = """
-UPDATE Campus
-SET nome_campus = %s
-WHERE cod_campus = %s;
-"""
-
 DELETAR = """
 DELETE FROM Campus
 WHERE cod_campus = %s;
-"""
-
-OBTER_POR_ID = """
-SELECT cod_campus, nome_campus
-FROM Campus
-WHERE cod_campus = %s;
-"""
-
-OBTER_TODOS = """
-SELECT cod_campus, nome_campus
-FROM Campus
-ORDER BY nome_campus;
-"""
-
-BUSCAR_POR_NOME = """
-SELECT cod_campus, nome_campus
-FROM Campus
-WHERE nome_campus ILIKE %s
-ORDER BY nome_campus;
 """
