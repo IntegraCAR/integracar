@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional
 
 @dataclass
 class Campus:
+    cod_campus: int
     nome_campus: str
-    cod_campus: Optional[int] = None

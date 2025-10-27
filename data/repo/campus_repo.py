@@ -39,3 +39,15 @@ def deletar(cod_campus: int) -> bool:
     except Exception as e:
         print(f"Erro ao deletar campus: {e}")
         return False
+    
+def obter_todos() -> List[Campus]:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT cod_campus, nome_campus FROM Campus")
+            registros = cursor.fetchall()
+            cursor.close()
+            return [Campus(cod_campus=r[0], nome_campus=r[1]) for r in registros]
+    except Exception as e:
+        print(f"Erro ao obter campus: {e}")
+        return []

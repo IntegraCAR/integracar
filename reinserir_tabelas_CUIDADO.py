@@ -37,4 +37,11 @@ analise_processos_repo.criar_tabela()
 
 #Reinserir dados dos campus
 from seeders.importar_campus import importar_campus
-#importar_campus("processos.csv")
+from seeders.importar_processo import importar_processos
+from seeders.importar_notificacao import importar_notificacoes
+from seeders.importar_status import importar_status
+
+importar_campus("seeders/processos.csv")
+importar_processos("seeders/processos.csv")
+importar_notificacoes("seeders/processos.csv")
+importar_status("seeders/processos.csv")
