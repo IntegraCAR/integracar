@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from data.model.notificacao import Notificacao
 from data.sql.notificacao_sql import *
 from util.database import get_connection
@@ -39,3 +39,18 @@ def deletar(cod_notificacao: int) -> bool:
     except Exception as e:
         print(f"Erro ao deletar notificação: {e}")
         return False
+
+def obter_todos() -> List[Notificacao]:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT cod_notificacao, motivo_notificacao FROM Notificacao")
+            registros = cursor.fetchall()
+            cursor.close()
+            return [Notificacao(
+                cod_notificacao=r[0],
+                motivo_notificacao=r[1]
+            ) for r in registros]
+    except Exception as e:
+        print(f"Erro ao obter notificações: {e}")
+        return []

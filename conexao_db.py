@@ -20,7 +20,6 @@ def criar_conexao():
             dbname=DBNAME,
             sslmode='require'
         )
-        print("Conexão realizada com sucesso!")
         return connection
     
     except Exception as e:

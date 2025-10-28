@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from data.model.processo import Processo
 from data.sql.processo_sql import *
 from util.database import get_connection
@@ -47,3 +47,20 @@ def deletar(cod_processo: int) -> bool:
     except Exception as e:
         print(f"Erro ao deletar processo: {e}")
         return False
+    
+def obter_todos() -> List[Processo]:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT cod_processo, codigo_edocs, numero_processo_florestal, codigo_empreendimento FROM Processo")
+            registros = cursor.fetchall()
+            cursor.close()
+            return [Processo(
+                cod_processo=r[0],
+                codigo_edocs=r[1],
+                numero_processo_florestal=r[2],
+                codigo_empreendimento=r[3]
+            ) for r in registros]
+    except Exception as e:
+        print(f"Erro ao obter processos: {e}")
+        return []
