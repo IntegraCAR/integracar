@@ -23,7 +23,7 @@ app.add_middleware(
 templates = Jinja2Templates(directory="templates")
 
 # Importando os routers públicos
-from routes.publico.publico_inicio import router as publico_router
+from routes.publico.publico_login import router as publico_router
 
 #routers públicos
 app.include_router(publico_router)

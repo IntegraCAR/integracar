@@ -7,5 +7,8 @@ class Usuario:
     cod_campus: Optional[int]
     cod_orientador: Optional[int]
     nome_usuario: str
+    email_usuario: str
+    senha_usuario: str
+    cpf_usuario: str
     role_usuario: str
     organizacao_usuario: str
