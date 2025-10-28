@@ -27,19 +27,7 @@ def inserir(notificacao: Notificacao, cursor=None) -> Optional[int]:
             conn.commit()
             cursor.close()
             return cod_notificacao
-
-def deletar(cod_notificacao: int) -> bool:
-    try:
-        with get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(DELETAR, (cod_notificacao,))
-            conn.commit()
-            cursor.close()
-            return True
-    except Exception as e:
-        print(f"Erro ao deletar notificação: {e}")
-        return False
-
+        
 def obter_todos() -> List[Notificacao]:
     try:
         with get_connection() as conn:
@@ -54,3 +42,15 @@ def obter_todos() -> List[Notificacao]:
     except Exception as e:
         print(f"Erro ao obter notificações: {e}")
         return []
+
+def deletar(cod_notificacao: int) -> bool:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(DELETAR, (cod_notificacao,))
+            conn.commit()
+            cursor.close()
+            return True
+    except Exception as e:
+        print(f"Erro ao deletar notificação: {e}")
+        return False

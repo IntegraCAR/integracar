@@ -54,7 +54,7 @@ def importar_processos(caminho_arquivo):
         print(f"\nImportação concluída.")
         print(f"Processos inseridos: {processos_inseridos}")
         print(f"Processos com erro: {processos_com_erro}")
-        print(f"Total processado: {processos_inseridos + processos_com_erro}/{len(df)}")
+        print(f"Total processado: {processos_inseridos + processos_com_erro}/{len(df)}\n")
 
     except Exception as e:
         print(f"Erro na importação: {e}")

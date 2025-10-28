@@ -100,7 +100,3 @@ def importar_analise_processos(caminho_arquivo):
 
     except Exception as e:
         print(f"Erro na importação: {e}")
-
-if __name__ == "__main__":
-    caminho = "seeders/processos.csv"
-    importar_analise_processos(caminho)

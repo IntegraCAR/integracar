@@ -35,15 +35,17 @@ notificacao_repo.criar_tabela()
 usuario_repo.criar_tabela()
 analise_processos_repo.criar_tabela()
 
-#Reinserir dados dos campus
+#Reinserir dados das tabelas
 from seeders.importar_campus import importar_campus
 from seeders.importar_processo import importar_processos
 from seeders.importar_notificacao import importar_notificacoes
 from seeders.importar_status import importar_status
 from seeders.importar_usuario import importar_usuarios
+from seeders.importar_analise_processos import importar_analise_processos
 
 importar_campus("seeders/processos.csv")
 importar_processos("seeders/processos.csv")
 importar_notificacoes("seeders/processos.csv")
 importar_status("seeders/processos.csv")
-importar_usuarios("seeders/processos.csv")
+importar_usuarios("seeders/orientadores.csv", "seeders/processos.csv")
+importar_analise_processos("seeders/processos.csv")

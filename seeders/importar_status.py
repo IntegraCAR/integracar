@@ -72,7 +72,7 @@ def importar_status(caminho_arquivo):
         print(f"\nImportação de Status concluída.")
         print(f"Status inseridos: {status_inseridos}")
         print(f"Status com erro: {status_com_erro}")
-        print(f"Total processado: {status_inseridos + status_com_erro}/{len(df)}")
+        print(f"Total processado: {status_inseridos + status_com_erro}/{len(df)}\n")
 
     except Exception as e:
         print(f"Erro na importação: {e}")

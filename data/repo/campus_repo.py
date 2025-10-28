@@ -27,6 +27,32 @@ def inserir(campus: Campus, cursor=None) -> Optional[int]:
             conn.commit()
             cursor.close()
             return cod_campus
+    
+def obter_por_nome(nome_campus: str) -> Optional[Campus]:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT cod_campus, nome_campus FROM Campus WHERE nome_campus = %s", (nome_campus,))
+            registro = cursor.fetchone()
+            cursor.close()
+            if registro:
+                return Campus(cod_campus=registro[0], nome_campus=registro[1])
+            return None
+    except Exception as e:
+        print(f"Erro ao obter campus por nome: {e}")
+        return None
+        
+def obter_todos() -> List[Campus]:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT cod_campus, nome_campus FROM Campus")
+            registros = cursor.fetchall()
+            cursor.close()
+            return [Campus(cod_campus=r[0], nome_campus=r[1]) for r in registros]
+    except Exception as e:
+        print(f"Erro ao obter campus: {e}")
+        return []
 
 def deletar(cod_campus: int) -> bool:
     try:
@@ -39,15 +65,3 @@ def deletar(cod_campus: int) -> bool:
     except Exception as e:
         print(f"Erro ao deletar campus: {e}")
         return False
-    
-def obter_todos() -> List[Campus]:
-    try:
-        with get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT cod_campus, nome_campus FROM Campus")
-            registros = cursor.fetchall()
-            cursor.close()
-            return [Campus(cod_campus=r[0], nome_campus=r[1]) for r in registros]
-    except Exception as e:
-        print(f"Erro ao obter campus: {e}")
-        return []

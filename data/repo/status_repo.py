@@ -34,19 +34,7 @@ def inserir(status: Status, cursor=None) -> Optional[int]:
             conn.commit()
             cursor.close()
             return cod_status
-
-def deletar(cod_status: int) -> bool:
-    try:
-        with get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(DELETAR, (cod_status,))
-            conn.commit()
-            cursor.close()
-            return True
-    except Exception as e:
-        print(f"Erro ao deletar status: {e}")
-        return False
-
+        
 def obter_todos() -> List[Status]:
     try:
         with get_connection() as conn:
@@ -62,3 +50,15 @@ def obter_todos() -> List[Status]:
     except Exception as e:
         print(f"Erro ao obter status: {e}")
         return []
+
+def deletar(cod_status: int) -> bool:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(DELETAR, (cod_status,))
+            conn.commit()
+            cursor.close()
+            return True
+    except Exception as e:
+        print(f"Erro ao deletar status: {e}")
+        return False
