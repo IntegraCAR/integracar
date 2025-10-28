@@ -76,7 +76,3 @@ def importar_status(caminho_arquivo):
 
     except Exception as e:
         print(f"Erro na importação: {e}")
-
-if __name__ == "__main__":
-    caminho = "seeders/processos.csv"
-    importar_status(caminho)

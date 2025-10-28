@@ -40,8 +40,10 @@ from seeders.importar_campus import importar_campus
 from seeders.importar_processo import importar_processos
 from seeders.importar_notificacao import importar_notificacoes
 from seeders.importar_status import importar_status
+from seeders.importar_usuario import importar_usuarios
 
 importar_campus("seeders/processos.csv")
 importar_processos("seeders/processos.csv")
 importar_notificacoes("seeders/processos.csv")
 importar_status("seeders/processos.csv")
+importar_usuarios("seeders/processos.csv")

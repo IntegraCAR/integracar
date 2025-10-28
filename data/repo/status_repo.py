@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from data.model.status import Status
 from data.sql.status_sql import *
@@ -46,3 +46,19 @@ def deletar(cod_status: int) -> bool:
     except Exception as e:
         print(f"Erro ao deletar status: {e}")
         return False
+
+def obter_todos() -> List[Status]:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT cod_status, data_hora_ultima_atualizacao, tipo_status FROM Status")
+            registros = cursor.fetchall()
+            cursor.close()
+            return [Status(
+                cod_status=r[0],
+                data_hora_ultima_atualizacao=r[1],
+                tipo_status=r[2]
+            ) for r in registros]
+    except Exception as e:
+        print(f"Erro ao obter status: {e}")
+        return []
