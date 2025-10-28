@@ -2,7 +2,7 @@ CRIAR_TABELA = """
 CREATE TABLE IF NOT EXISTS Status (
     cod_status SERIAL PRIMARY KEY,
     data_hora_ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    tipo_status VARCHAR(50) NOT NULL
+    tipo_status VARCHAR(100) NOT NULL
 );
 """
 

@@ -35,19 +35,7 @@ def inserir(processo: Processo, cursor=None) -> Optional[int]:
             conn.commit()
             cursor.close()
             return cod_processo
-
-def deletar(cod_processo: int) -> bool:
-    try:
-        with get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(DELETAR, (cod_processo,))
-            conn.commit()
-            cursor.close()
-            return True
-    except Exception as e:
-        print(f"Erro ao deletar processo: {e}")
-        return False
-    
+        
 def obter_todos() -> List[Processo]:
     try:
         with get_connection() as conn:
@@ -64,3 +52,15 @@ def obter_todos() -> List[Processo]:
     except Exception as e:
         print(f"Erro ao obter processos: {e}")
         return []
+
+def deletar(cod_processo: int) -> bool:
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(DELETAR, (cod_processo,))
+            conn.commit()
+            cursor.close()
+            return True
+    except Exception as e:
+        print(f"Erro ao deletar processo: {e}")
+        return False

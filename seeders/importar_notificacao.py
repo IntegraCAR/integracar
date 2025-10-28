@@ -40,7 +40,7 @@ def importar_notificacoes(caminho_arquivo):
         print(f"\nImportação de Notificações concluída.")
         print(f"Notificações inseridas: {notificacoes_inseridas}")
         print(f"Notificações com erro: {notificacoes_com_erro}")
-        print(f"Total processado: {notificacoes_inseridas + notificacoes_com_erro}/{len(motivos_unicos)}")
+        print(f"Total processado: {notificacoes_inseridas + notificacoes_com_erro}/{len(motivos_unicos)}\n")
 
     except Exception as e:
         print(f"Erro na importação: {e}")

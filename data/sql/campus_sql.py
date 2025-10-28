@@ -11,6 +11,12 @@ VALUES (%s)
 RETURNING cod_campus;
 """
 
+OBTER_POR_NOME = """
+SELECT cod_campus, nome_campus
+FROM Campus
+WHERE nome_campus = %s;
+"""
+
 DELETAR = """
 DELETE FROM Campus
 WHERE cod_campus = %s;

@@ -51,7 +51,7 @@ def importar_campus(caminho_arquivo):
         print(f"Campus inseridos: {campus_inseridos}")
         print(f"Campus já existentes: {campus_existentes}")
         print(f"Campus com erro: {campus_com_erro}")
-        print(f"Total processado: {campus_inseridos + campus_existentes + campus_com_erro}/{len(campi_unicos)}")
+        print(f"Total processado: {campus_inseridos + campus_existentes + campus_com_erro}/{len(campi_unicos)}\n")
 
     except Exception as e:
         print(f"Erro na importação: {e}")
