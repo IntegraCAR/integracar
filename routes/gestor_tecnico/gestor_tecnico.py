@@ -5,11 +5,8 @@ from util.auth_decorator import requer_autenticacao
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/gestor_tecnico")
+@router.get("/gestor-tecnico")
 @requer_autenticacao(["gestor_tecnico"])
 async def get_gestor_tecnico_home(request: Request, usuario_logado: dict = None):
-    response = templates.TemplateResponse("gestor_tecnico/gestor_tecnico_home.html", {
-        "request": request,
-        "usuario": usuario_logado
-    })
-    return response
+    from fastapi.responses import JSONResponse
+    return JSONResponse(content={"usuario": usuario_logado})

@@ -8,8 +8,5 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/consultor")
 @requer_autenticacao(["consultor"])
 async def get_consultor_home(request: Request, usuario_logado: dict = None):
-    response = templates.TemplateResponse("consultor/consultor_home.html", {
-        "request": request,
-        "usuario": usuario_logado
-    })
-    return response
+    from fastapi.responses import JSONResponse
+    return JSONResponse(content={"usuario": usuario_logado})

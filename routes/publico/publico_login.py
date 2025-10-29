@@ -9,18 +9,6 @@ from fastapi import Form, status
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-'''@router.get("/")
-async def get_inicio(request: Request):
-    campus = campus_repo.obter_todos()
-    response = templates.TemplateResponse(
-        "publico/inicio.html", 
-        {
-            "request": request,
-            "campus": campus
-        }
-    )
-    return response'''
-
 # Rota de login
 @router.post("/login")
 async def post_login(
@@ -30,11 +18,20 @@ async def post_login(
     redirect: str = Form(None)
 ):
     usuario = usuario_repo.obter_por_email(email)
-
-    if not usuario or not verificar_senha(senha, usuario.senha):
-        return templates.TemplateResponse(
-            "publico/publico_login.html",
-            {"request": request, "erro": "Email ou senha inválidos"}
+    #print(f"[DEBUG] Email recebido: {email}")
+    #print(f"[DEBUG] Usuario retornado: {usuario}")
+    #print(f"[DEBUG] Senha enviada: {senha}")
+    from fastapi.responses import JSONResponse
+    if usuario:
+        #print(f"[DEBUG] Senha salva: {usuario.senha_usuario}")
+        resultado_verificacao = verificar_senha(senha, usuario.senha_usuario)
+        #print(f"[DEBUG] Resultado verificar_senha: {resultado_verificacao}")
+    else:
+        resultado_verificacao = False
+    if not usuario or not resultado_verificacao:
+        return JSONResponse(
+            status_code=401,
+            content={"erro": "Email ou senha inválidos"}
         )
 
     # Criar sessão

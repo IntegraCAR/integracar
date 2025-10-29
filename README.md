@@ -7,3 +7,7 @@ DB_HOST=aws-1-us-east-1.pooler.supabase.com
 DB_PORT=5432
 DB_NAME=postgres
 ```
+
+Testando aplicação: em terminais separados rode:
+- rode o arquivo main.py
+- digite no terminal 'cd frontend; npm run dev'

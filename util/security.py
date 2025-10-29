@@ -46,11 +46,13 @@ def verificar_senha(senha_plana: str, senha_hash: str) -> bool:
     Returns:
         True se a senha está correta, False caso contrário
     """
-    try:
-        dado = _prepare_password_for_bcrypt(senha_plana)
+    # Se o hash parece ser bcrypt (começa com $2b$ ou $2a$), usa bcrypt
+    if senha_hash.startswith("$2b$") or senha_hash.startswith("$2a$"):
+        import bcrypt
+        dado = senha_plana.encode("utf-8")
         return bcrypt.checkpw(dado, senha_hash.encode("utf-8"))
-    except Exception:
-        return False
+    # Senão, compara texto puro
+    return senha_plana == senha_hash
 
 
 def gerar_token_redefinicao(tamanho: int = 32) -> str:
