@@ -8,7 +8,7 @@ try:
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
-                        DROP TABLE IF EXISTS AnaliseProcessos CASCADE;
+                        DROP TABLE IF EXISTS Analise_Processos CASCADE;
                         DROP TABLE IF EXISTS Usuario CASCADE;
                         DROP TABLE IF EXISTS Processo CASCADE;
                         DROP TABLE IF EXISTS Notificacao CASCADE;
@@ -47,5 +47,5 @@ importar_campus("seeders/processos.csv")
 importar_processos("seeders/processos.csv")
 importar_notificacoes("seeders/processos.csv")
 importar_status("seeders/processos.csv")
-importar_usuarios("seeders/orientadores.csv", "seeders/processos.csv")
+importar_usuarios("seeders/orientadores.csv", "seeders/processos.csv", "seeders/bolsistas.csv")
 importar_analise_processos("seeders/processos.csv")
