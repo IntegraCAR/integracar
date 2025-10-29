@@ -1,7 +1,7 @@
 Data e Hora do início da análise,Campus,Nome completo do avaliador Ifes do processo CAR,Nome completo do ponto focal Idaf,Código Edocs,Processo florestal nº,Código do empreendimento nº,Meta de prazo de andamento do processo,Status,Motivo da notificação ao proprietário (se aplicável),Data e Hora da ultima atualização de Status
 19/09/2025 15:42:00,Alegre,Jeferson Luiz Ferrari,Nathale Bicalho Corrêa,2025-JMF8Z,16127/2025,637992,02/10/2025,Análise iniciada – ainda sem parecer,,02/10/2025 14:45:00
 19/09/2025 15:42:00,Alegre,João Paulo Beteste de Oliveira,Nathale Bicalho Corrêa,Ainda não Digitalizado,50075/2015,67895,02/10/2025,Análise iniciada – ainda sem parecer,,02/10/2025 14:46:00
-30/10/2025 17:00:00,Cachoeiro de Itapemirim,Lyndenberg Campelo Correa,Patricia Borges Dias,2025-G0414,23848/2023,630091,02/10/2025,"Aprovado – título emitido, mas não entregue",,02/10/2025 17:31:00
+30/10/2025 17:00:00,Cachoeiro de Itapemirim,Lyndemberg Campelo Correia,Patricia Borges Dias,2025-G0414,23848/2023,630091,02/10/2025,"Aprovado – título emitido, mas não entregue",,02/10/2025 17:31:00
 29/09/2025 10:00:00,Cachoeiro de Itapemirim,Renzo Dias Rodrigues,Patricia Borges Dias,2025-MLQT4,782/2016,70292,02/10/2025,Análise iniciada – ainda sem parecer,,29/09/2025 12:00:00
 30/09/2025 14:00:00,Montanha,Filipe Hubner,Paulo Vinicius Alves Peruchi,2025-PRGFB,21700/2022,624011,02/10/2025,Análise iniciada – ainda sem parecer,,30/09/2025 15:16:00
 30/09/2025 14:00:00,Montanha,Ysa Helena Diniz Morais de Luna,Paulo Vinicius Alves Peruchi,2025-8XCQV,21153/2018,599694,02/10/2025,Análise iniciada – ainda sem parecer,,30/09/2025 15:16:00
@@ -15,7 +15,7 @@ Data e Hora do início da análise,Campus,Nome completo do avaliador Ifes do pro
 00/00/2025 00:00:00,Linhares,Zudivan Peterli,Renata Guidini Chagas Falsoni,,,,02/10/2025,Análise não iniciada,,00/00/2025 00:00:00
 00/00/2025 00:00:00,Vitória,Bruno Guimarães Ventorim,Ivan Oliveira Lima,,,,02/10/2025,Análise não iniciada,,00/00/2025 00:00:00
 19/09/2025 15:42:00,Alegre,João Paulo Beteste de Oliveira,Nathale Bicalho Corrêa,2025-0D732,16966/2024,633911,02/10/2025,"Aprovado – título emitido, mas não entregue",,02/10/2025 14:44:00
-00/00/2025 00:00:00,Cachoeiro de Itapemirim,Lyndenberg Campelo Correa,Patricia Borges Dias,2025-RVJ78,39213/2016,141975,02/10/2025,Aprovado – título emitido e entregue,,00/00/2025 00:00:00
+00/00/2025 00:00:00,Cachoeiro de Itapemirim,Lyndemberg Campelo Correia,Patricia Borges Dias,2025-RVJ78,39213/2016,141975,02/10/2025,Aprovado – título emitido e entregue,,00/00/2025 00:00:00
 23/09/2025 09:11:00,Cachoeiro de Itapemirim,Renzo Dias Rodrigues,Patricia Borges Dias,2025-L0B50,23068/2019,607793,02/10/2025,Aprovado – título emitido e entregue,,26/09/2025 16:00:00
 10/09/2025 13:59:00,Cachoeiro de Itapemirim,Renzo Dias Rodrigues,Patricia Borges Dias,2025-KNHD6,39207/2016,141956,02/10/2025,Aprovado – título emitido e entregue,,19/10/2025 16:00:00
 01/10/2025,Ibatiba,Arnaldo Henrique de Oliveira Carvalho,Rodolfo Catein Lugon-Moulin Alves,2025-BMVM9,14208/2025,637557,02/10/2025,Aprovado – título emitido e entregue,,01/10/2025
@@ -36,7 +36,7 @@ Data e Hora do início da análise,Campus,Nome completo do avaliador Ifes do pro
 30/09/2025 14:00:00,Montanha,Filipe Hubner,Paulo Vinicius Alves Peruchi,2025-TRFT2,28422/2015,54884,02/10/2025,"Aprovado – título emitido, mas não entregue",,30/09/2025 15:16:00
 30/09/2025 14:00:00,Montanha,Ysa Helena Diniz Morais de Luna,Paulo Vinicius Alves Peruchi,2025-Q3C69,8112/2019,603998,02/10/2025,"Aprovado – título emitido, mas não entregue",,30/09/2025 15:16:00
 00/00/2025 00:00:00,Nova Venécia,Absalão Aranha Nascimento,Tiago Frigério Gomes,2025-7VWH2,26055/2015,53195,02/10/2025,"Aprovado – título emitido, mas não entregue",,00/00/2025 00:00:00
-00/00/2025 00:00:00,Nova Venécia,Adilson Marcio Coelho,Tiago Frigério Gomes,2025-75RZ6,17175/2013,17770,02/10/2025,"Aprovado – título emitido, mas não entregue",,00/00/2025 00:00:00
+00/00/2025 00:00:00,Nova Venécia,Adilson Márcio Coelho,Tiago Frigério Gomes,2025-75RZ6,17175/2013,17770,02/10/2025,"Aprovado – título emitido, mas não entregue",,00/00/2025 00:00:00
 00/00/2025 00:00:00,Nova Venécia,Ediu Carlos Lopes Lemos,Tiago Frigério Gomes,2025-7CBM1,22612/2024,635101,02/10/2025,"Aprovado – título emitido, mas não entregue",,00/00/2025 00:00:00
 01/10/2025 09:30:00,Santa Teresa,Ednaldo Miranda de Oliveira,Graciany Tononi Sarmento ,2025-BRHSJ,22178/2022,624100,01/10/2025,"Aprovado – título emitido, mas não entregue",,01/10/2025 10:50:00
 01/10/2025 11:00:00,Santa Teresa,Ednaldo Miranda de Oliveira,Graciany Tononi Sarmento ,2025-3CHKB,45105/2015,65139,01/10/2025,"Aprovado – título emitido, mas não entregue",,01/10/2025 11:50:00
