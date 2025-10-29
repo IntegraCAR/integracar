@@ -45,13 +45,11 @@ export default function LoginPage() {
                 <div className="max-w-sm w-full">
                     <div className="space-y-4 mb-8">
                         <h1 className="text-3xl font-bold text-gray-900">IntegraCAR</h1>
-                        <p className="text-gray-600 text-sm">Não possui uma conta?</p>
-                        <Button
-                            variant="outline"
-                            className="bg-[#3B82F6] text-white hover:bg-[#2563EB] border-none px-6 py-2 text-sm rounded-md"
-                        >
-                            Criar uma agora
-                        </Button>
+                        {<ul className="text-gray-600 text-sm list-disc list-inside space-y-1">
+                            <li>Gerencie processos CAR em um único lugar</li>
+                            <li>Acompanhe o status e as análises em tempo real</li>
+                            <li>Relatórios e histórico centralizados</li>
+                        </ul>}
                     </div>
 
                     {/* Logo Ilustração */}
@@ -59,8 +57,8 @@ export default function LoginPage() {
                         <Image
                             src="/logo_login.png"
                             alt="IntegraCAR Logo"
-                            width={420}
-                            height={420}
+                            width={360}
+                            height={360}
                             className="object-contain"
                             priority
                         />

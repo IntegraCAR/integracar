@@ -10,4 +10,5 @@ DB_NAME=postgres
 
 Testando aplicação: em terminais separados rode:
 - rode o arquivo main.py
-- digite no terminal 'cd frontend; npm run dev'
+- digite no terminal 'npm install'
+- depois 'cd frontend; npm run dev'
