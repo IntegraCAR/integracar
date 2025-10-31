@@ -6,25 +6,24 @@ import uvicorn
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # Gerar chave secreta (em produção, use variável de ambiente!)
 # Chave fixa para manter sessões após reload do servidor
 SECRET_KEY = "integracar_development_secret_key_12345678901234567890123456789012"
 
-# Adicionar middleware de sessão
 app.add_middleware(
     SessionMiddleware, 
     secret_key=SECRET_KEY,
     max_age=28800,  # Sessão expira em 8 horas (28800 segundos)
     same_site="lax",
     https_only=False  # Em produção, mude para True com HTTPS
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 #app.mount("/static", StaticFiles(directory="static"), name="static")

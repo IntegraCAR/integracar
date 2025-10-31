@@ -25,39 +25,45 @@ export const authService = {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 body: formData,
-                credentials: 'include', // Para incluir cookies na requisição
+                credentials: 'include',
             });
 
-            // Trata redirecionamento manualmente
-            if (response.status === 303) {
-                const location = response.headers.get("Location");
-                if (location) {
-                    window.location.href = location;
-                    return {
-                        success: true,
-                        redirectUrl: location,
-                    };
-                }
-            }
-
-            if (response.redirected) {
-                return {
-                    success: true,
-                    redirectUrl: response.url,
-                };
-            }
-
             if (!response.ok) {
-                const text = await response.text();
+                const json = await response.json();
                 return {
                     success: false,
-                    message: 'Email ou senha inválidos',
+                    message: json.erro || 'Email ou senha inválidos',
                 };
             }
 
+            const json = await response.json();
+            const usuario = json.usuario;
+            let redirectUrl = '/';
+            switch (usuario.role_usuario?.toLowerCase()) {
+                case 'bolsista':
+                    redirectUrl = '/bolsista';
+                    break;
+                case 'orientador':
+                    redirectUrl = '/orientador';
+                    break;
+                case 'consultor':
+                    redirectUrl = '/consultor';
+                    break;
+                case 'coordenador':
+                    redirectUrl = '/coordenador';
+                    break;
+                case 'gestor_tecnico':
+                    redirectUrl = '/gestor_tecnico';
+                    break;
+                case 'gestor_administrativo':
+                    redirectUrl = '/gestor_administrativo';
+                    break;
+                default:
+                    redirectUrl = '/';
+            }
             return {
                 success: true,
-                redirectUrl: response.url,
+                redirectUrl,
             };
         } catch (error) {
             console.error('Erro ao fazer login:', error);

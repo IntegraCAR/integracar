@@ -29,3 +29,81 @@ DELETAR = """
 DELETE FROM Analise_Processos
 WHERE cod_analise = %s;
 """
+
+OBTER_TODOS_DETALHADO = """
+SELECT
+    ap.cod_analise,
+    ap.data_hora_inicio_analise,
+    ap.data_previsao_fim_analise,
+    ap.cod_processo,
+    p.numero_processo_florestal,
+    ap.cod_status,
+    s.tipo_status,
+    s.data_hora_ultima_atualizacao,
+    ap.cod_usuario,
+    u.nome_usuario,
+    ap.cod_campus,
+    c.nome_campus,
+    ap.cod_notificacao,
+    n.motivo_notificacao
+FROM Analise_Processos ap
+LEFT JOIN Processo p ON ap.cod_processo = p.cod_processo
+LEFT JOIN Status s ON ap.cod_status = s.cod_status
+LEFT JOIN Usuario u ON ap.cod_usuario = u.cod_usuario
+LEFT JOIN Campus c ON ap.cod_campus = c.cod_campus
+LEFT JOIN Notificacao n ON ap.cod_notificacao = n.cod_notificacao
+ORDER BY ap.data_hora_inicio_analise DESC;
+"""
+
+OBTER_POR_PROCESSO = """
+SELECT
+    ap.cod_analise,
+    ap.data_hora_inicio_analise,
+    ap.data_previsao_fim_analise,
+    ap.cod_processo,
+    p.numero_processo_florestal,
+    ap.cod_status,
+    s.tipo_status,
+    s.data_hora_ultima_atualizacao,
+    ap.cod_usuario,
+    u.nome_usuario,
+    ap.cod_campus,
+    c.nome_campus,
+    ap.cod_notificacao,
+    n.motivo_notificacao
+FROM Analise_Processos ap
+LEFT JOIN Processo p ON ap.cod_processo = p.cod_processo
+LEFT JOIN Status s ON ap.cod_status = s.cod_status
+LEFT JOIN Usuario u ON ap.cod_usuario = u.cod_usuario
+LEFT JOIN Campus c ON ap.cod_campus = c.cod_campus
+LEFT JOIN Notificacao n ON ap.cod_notificacao = n.cod_notificacao
+WHERE ap.cod_processo = %s
+ORDER BY ap.data_hora_inicio_analise DESC;
+"""
+
+CONTAGEM_POR_STATUS = """
+SELECT s.tipo_status, COUNT(*) AS quantidade
+FROM Analise_Processos ap
+LEFT JOIN Status s ON ap.cod_status = s.cod_status
+GROUP BY s.tipo_status
+ORDER BY quantidade DESC;
+"""
+
+ULTIMAS_ANALISES = """
+SELECT
+    ap.cod_analise,
+    ap.data_hora_inicio_analise,
+    ap.data_previsao_fim_analise,
+    ap.cod_processo,
+    p.numero_processo_florestal,
+    ap.cod_status,
+    s.tipo_status,
+    ap.cod_usuario,
+    u.nome_usuario
+FROM Analise_Processos ap
+LEFT JOIN Processo p ON ap.cod_processo = p.cod_processo
+LEFT JOIN Status s ON ap.cod_status = s.cod_status
+LEFT JOIN Usuario u ON ap.cod_usuario = u.cod_usuario
+ORDER BY ap.data_hora_inicio_analise DESC
+LIMIT %s;
+"""

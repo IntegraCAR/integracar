@@ -1,7 +1,11 @@
 from functools import wraps
 from typing import List, Optional
 from fastapi import Request, HTTPException, status
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
+import os
+
+# URL do frontend para redirecionamentos de login (ajuste conforme ambiente)
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 
 def obter_usuario_logado(request: Request) -> Optional[dict]:
@@ -53,16 +57,34 @@ def requer_autenticacao(perfis_autorizados: List[str] = None):
             # Verifica se o usuário está logado
             usuario = obter_usuario_logado(request)
             if not usuario:
-                # Redireciona para login se não estiver autenticado
+                # If the request looks like an API/XHR request (Accepts JSON or X-Requested-With),
+                # return a 401 JSON response instead of an HTML redirect so clients (fetch/ajax)
+                # can handle authentication flows without following redirects.
+                accept = request.headers.get('accept', '')
+                xrw = request.headers.get('x-requested-with', '')
+                # Prefer redirecting to the frontend login page (absolute URL) so browser
+                # navigations go to the Next.js app rather than to the backend /login route.
+                redirect_path = "/login?redirect=" + str(request.url.path)
+                redirect_url = FRONTEND_URL.rstrip('/') + redirect_path
+                if 'application/json' in accept or xrw.lower() == 'xmlhttprequest':
+                    return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={
+                        'error': 'not_authenticated',
+                        'redirect': redirect_url
+                    })
+
+                # Fallback: redirect to login for normal browser navigations
                 return RedirectResponse(
-                    url="/login?redirect=" + str(request.url.path),
+                    url=redirect_url,
                     status_code=status.HTTP_303_SEE_OTHER
                 )
             
             # Verifica autorização se perfis foram especificados
             if perfis_autorizados:
-                perfil_usuario = usuario.get('perfil', 'cliente')
-                if perfil_usuario not in perfis_autorizados:
+                perfil_usuario = usuario.get('role_usuario', 'cliente')
+                # Permite comparação case-insensitive
+                perfil_usuario = perfil_usuario.lower() if isinstance(perfil_usuario, str) else perfil_usuario
+                perfis_autorizados_lower = [p.lower() for p in perfis_autorizados]
+                if perfil_usuario not in perfis_autorizados_lower:
                     # Retorna erro 403 se não autorizado
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
