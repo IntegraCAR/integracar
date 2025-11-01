@@ -4,6 +4,7 @@ from data.repo import campus_repo, usuario_repo
 from util.security import criar_hash_senha, verificar_senha
 from fastapi.responses import RedirectResponse
 from util.auth_decorator import criar_sessao, requer_autenticacao
+from fastapi.responses import JSONResponse
 from fastapi import Form, status
 
 router = APIRouter()
@@ -42,10 +43,8 @@ async def post_login(
         "organizacao_usuario": usuario.organizacao_usuario
     }
     criar_sessao(request, usuario_dict)
-    print(usuario_dict)
 
-    # Retornar JSON com dados do usuário autenticado
-    from fastapi.responses import JSONResponse
+    # Sempre retorna JSON com dados do usuário autenticado
     return JSONResponse(
         status_code=200,
         content={"usuario": usuario_dict}

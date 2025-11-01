@@ -1,15 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 type Analise = any
 
-export default function CoordenadorPage() {
+export default function ProcessosPorStatusPage() {
+    const searchParams = useSearchParams()
     const router = useRouter()
+    const status = searchParams.get('status')
+
     const [loading, setLoading] = useState(true)
-    const [data, setData] = useState<{ usuario?: any; obter_todos?: Analise[]; contagem_por_status?: any[]; ultimas_analises?: Analise[] } | null>(null)
+    const [data, setData] = useState<{ usuario?: any; obter_todos?: Analise[] } | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
@@ -46,52 +49,40 @@ export default function CoordenadorPage() {
 
     if (error) return <div className="p-8 text-red-600">{error}</div>
 
-    const contagem = data?.contagem_por_status || []
-    const ultimas = data?.ultimas_analises || []
-    const total = contagem.reduce((s: number, item: any) => s + (item.quantidade || 0), 0)
-
     const usuario = data?.usuario
     const nomeUsuario = usuario?.nome_usuario || "Usuário"
     const primeiraLetra = nomeUsuario.charAt(0).toUpperCase()
 
-    // Log para debug
-    console.log('Contagem por status:', contagem)
-
-    // Cores para cada status (baseado nos status reais do sistema)
+    // Cores para cada status
     const getStatusColor = (status: string): string => {
         const statusLower = status?.toLowerCase() || ""
 
-        // Aprovado – título emitido, mas não entregue (cinza)
         if (statusLower.includes("aprovado") && statusLower.includes("título") && statusLower.includes("não")) {
             return "#73ad4cff"
         }
 
-        // Reprovado – notificação ao proprietário/possuidor realizada (azul claro)
         if (statusLower.includes("reprovado") && statusLower.includes("realizada")) {
             return "#6B7280"
         }
 
-        // Análise iniciada – ainda sem parecer (amarelo)
         if (statusLower.includes("análise") && statusLower.includes("iniciada")) {
             return "#FACC15"
         }
 
-        // Aprovado – título emitido e entregue (verde escuro)
         if (statusLower.includes("aprovado") && statusLower.includes("título") && statusLower.includes("entregue")) {
             return "#057a55ff"
         }
 
-        // Reprovado – notificação ao proprietário/possuidor pendente (azul escuro)
         if (statusLower.includes("reprovado") && statusLower.includes("pendente")) {
             return "#1E3A8A"
         }
 
-        return "#9CA3AF" // Cinza padrão
+        return "#9CA3AF"
     }
 
-    const handleVerProcessos = (status: string) => {
-        router.push(`/coordenador/processos?status=${encodeURIComponent(status)}`)
-    }
+    const processosFiltrados = status
+        ? (data?.obter_todos || []).filter((p: any) => p.tipo_status === status)
+        : []
 
     return (
         <div className="flex min-h-screen bg-gray-50">
@@ -163,11 +154,14 @@ export default function CoordenadorPage() {
                             <h1 className="text-2xl font-semibold text-gray-900">Processos CAR</h1>
                         </div>
                         <div className="flex space-x-4 text-sm">
-                            <button className="px-4 py-2 text-gray-700 border-b-2 border-blue-600 font-medium">
+                            <button
+                                onClick={() => router.push('/coordenador')}
+                                className="px-4 py-2 text-gray-500 hover:text-gray-700"
+                            >
                                 Número de Processos
                             </button>
-                            <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
-                                Gráficos
+                            <button className="px-4 py-2 text-gray-700 border-b-2 border-blue-600 font-medium">
+                                Tabela
                             </button>
                         </div>
                     </div>
@@ -187,113 +181,97 @@ export default function CoordenadorPage() {
                     </div>
                 </div>
 
-                {/* Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Panel - Chart and Status List */}
-                    <div className="bg-white rounded-lg shadow p-6">
-                        <h2 className="text-sm font-medium text-gray-900 mb-4">Número de Processos</h2>
-
-                        {/* Donut Chart */}
-                        <div className="flex items-center justify-center mb-6">
-                            <div className="relative w-64 h-36">
-                                <svg viewBox="0 0 120 70" className="w-full h-full">
-                                    {contagem.map((item: any, idx: number) => {
-                                        const offset = contagem.slice(0, idx).reduce((s: number, c: any) => s + (c.quantidade || 0), 0)
-                                        const percent = total > 0 ? ((item.quantidade || 0) / total) * 100 : 0
-                                        const offsetPercent = total > 0 ? (offset / total) * 100 : 0
-                                        // Para semicírculo, usamos metade da circunferência
-                                        const circumference = Math.PI * 51 // metade do círculo (raio 51)
-                                        const strokeDasharray = `${(percent / 100) * circumference} ${circumference}`
-                                        const strokeDashoffset = -((offsetPercent / 100) * circumference)
-                                        const color = getStatusColor(item.tipo_status)
-
-                                        return (
-                                            <path
-                                                key={idx}
-                                                d="M 9 60 A 51 51 0 0 1 111 60"
-                                                fill="none"
-                                                stroke={color}
-                                                strokeWidth="17"
-                                                strokeDasharray={strokeDasharray}
-                                                strokeDashoffset={strokeDashoffset}
-                                                strokeLinecap="butt"
-                                            />
-                                        )
-                                    })}
-                                </svg>
-                                <div className="absolute inset-0 flex items-end justify-center pb-3">
-                                    <div className="text-center">
-                                        <div className="text-4xl font-bold text-gray-900">{total}</div>
-                                        <div className="text-xs text-gray-400">Total</div>
-                                    </div>
+                {/* Tabela de Processos */}
+                <div className="bg-white rounded-lg shadow">
+                    <div className="p-6">
+                        {/* Header com botão voltar */}
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center space-x-4">
+                                <button
+                                    onClick={() => router.push('/coordenador')}
+                                    className="text-gray-600 hover:text-gray-900"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <div>
+                                    <h2 className="text-xl font-semibold text-gray-900">Processos</h2>
+                                    <p className="text-sm text-gray-500">Status: {status}</p>
                                 </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <div className="flex items-center space-x-2">
+                                    <div
+                                        className="w-3 h-3 rounded-full flex-shrink-0"
+                                        style={{ backgroundColor: getStatusColor(status || '') }}
+                                    />
+                                    <span className="text-sm font-medium text-gray-700">{status}</span>
+                                </div>
+                                <span className="text-2xl font-bold text-gray-900">{processosFiltrados.length}</span>
                             </div>
                         </div>
 
-                        {/* Status List */}
-                        <div className="space-y-3">
-                            <div className="flex items-center justify-between text-sm font-medium text-gray-700 pb-2 border-b">
-                                <span>Status</span>
-                                <span>Quantidade</span>
-                            </div>
-                            {contagem.map((item: any, idx: number) => (
-                                <div key={idx} className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center space-x-2">
-                                        <div
-                                            className="w-3 h-3 rounded-full flex-shrink-0"
-                                            style={{ backgroundColor: getStatusColor(item.tipo_status) }}
-                                        />
-                                        <span className="text-gray-700">{item.tipo_status}</span>
-                                    </div>
-                                    <span className="font-medium text-gray-900">{item.quantidade}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Right Panel - Process List */}
-                    <div className="lg:col-span-2 bg-white rounded-lg shadow">
-                        <div className="p-6">
-                            <div className="grid grid-cols-3 gap-4 text-sm font-medium text-gray-700 pb-4 border-b">
-                                <div>Status</div>
-                                <div className="text-center">Última Atualização</div>
-                                <div className="text-right"></div>
-                            </div>
-
-                            <div className="divide-y">
-                                {ultimas.map((item: any, idx: number) => (
-                                    <div key={idx} className="grid grid-cols-3 gap-4 py-4 items-center">
-                                        <div className="flex items-center space-x-3">
-                                            <div
-                                                className="w-3 h-3 rounded-full flex-shrink-0"
-                                                style={{ backgroundColor: getStatusColor(item.tipo_status) }}
-                                            />
-                                            <div>
-                                                <div className="text-sm font-medium text-gray-900">
-                                                    {item.tipo_status || 'Status'}
+                        {/* Tabela */}
+                        <div className="border rounded-lg overflow-hidden">
+                            <table className="w-full">
+                                <thead className="bg-gray-50 border-b">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Código E-Docs
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Última Atualização
+                                        </th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {processosFiltrados.map((processo: any, idx: number) => (
+                                        <tr key={idx} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center space-x-3">
+                                                    <div
+                                                        className="w-2 h-2 rounded-full flex-shrink-0"
+                                                        style={{ backgroundColor: getStatusColor(processo.tipo_status) }}
+                                                    />
+                                                    <span className="text-sm font-medium text-gray-900">
+                                                        {processo.cod_edocs || 'N/A'}
+                                                    </span>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="text-sm text-gray-500 text-center">
-                                            {item.ultima_atualizacao
-                                                ? new Date(item.ultima_atualizacao).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
-                                                : '-'
-                                            }
-                                        </div>
-                                        <div className="text-right">
-                                            <Button
-                                                variant="default"
-                                                size="sm"
-                                                className="bg-[#3B82F6] hover:bg-[#2563EB] text-white"
-                                                onClick={() => handleVerProcessos(item.tipo_status)}
-                                            >
-                                                ▶ Ver Processos
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {processo.data_hora_ultima_atualizacao
+                                                    ? new Date(processo.data_hora_ultima_atualizacao).toLocaleDateString('pt-BR', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric'
+                                                    })
+                                                    : '-'
+                                                }
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                <Button
+                                                    variant="default"
+                                                    size="sm"
+                                                    className="bg-[#3B82F6] hover:bg-[#2563EB] text-white"
+                                                    onClick={() => router.push(`/coordenador/processo?cod=${processo.cod_processo}`)}
+                                                >
+                                                    → Ver Processo
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
+
+                        {processosFiltrados.length === 0 && (
+                            <div className="text-center py-12 text-gray-500">
+                                Nenhum processo encontrado para este status.
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>

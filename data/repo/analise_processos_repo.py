@@ -10,16 +10,19 @@ def _row_to_dict_detalhado(r):
         'data_hora_inicio_analise': r[1],
         'data_previsao_fim_analise': r[2],
         'cod_processo': r[3],
-        'numero_processo_florestal': r[4],
-        'cod_status': r[5],
-        'tipo_status': r[6],
-        'data_hora_ultima_atualizacao_status': r[7],
-        'cod_usuario': r[8],
-        'nome_usuario': r[9],
-        'cod_campus': r[10],
-        'nome_campus': r[11],
-        'cod_notificacao': r[12],
-        'motivo_notificacao': r[13]
+        'cod_edocs': r[4],
+        'num_processo_florestal': r[5],
+        'cod_empreendimento': r[6],
+        'cod_status': r[7],
+        'tipo_status': r[8],
+        'data_hora_ultima_atualizacao': r[9],
+        'cod_usuario': r[10],
+        'nome_usuario': r[11],
+        'role_usuario': r[12],
+        'cod_campus': r[13],
+        'nome_campus': r[14],
+        'cod_notificacao': r[15],
+        'motivo_notificacao': r[16]
     }
 
 def criar_tabela() -> bool:
@@ -74,6 +77,49 @@ def deletar(cod_analise: int) -> bool:
     except Exception as e:
         print(f"Erro ao deletar análise: {e}")
         return False
+
+
+def atualizar(cod_processo: int, data_hora_inicio: str, data_previsao_fim: str, cod_status: int) -> Optional[int]:
+    """Atualiza uma análise de processo existente e atualiza o status associado."""
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            
+            # Mapear cod_status para tipo_status
+            status_map = {
+                1: "Análise iniciada – ainda sem parecer",
+                2: "Aprovado – título emitido, mas não entregue",
+                3: "Aprovado – título emitido e entregue",
+                4: "Reprovado – notificação ao proprietário/possuidor pendente",
+                5: "Reprovado – notificação ao proprietário/possuidor realizada"
+            }
+            
+            tipo_status = status_map.get(cod_status, "Análise iniciada – ainda sem parecer")
+            
+            # Atualizar a análise do processo (apenas as datas)
+            cursor.execute(ATUALIZAR, (
+                data_hora_inicio,
+                data_previsao_fim,
+                cod_processo
+            ))
+            result = cursor.fetchone()
+            if not result:
+                return None
+                
+            cod_analise = result[0]
+            cod_status_atual = result[1]
+            
+            # Atualizar o registro existente de Status
+            cursor.execute(ATUALIZAR_STATUS_EXISTENTE, (tipo_status, cod_status_atual))
+            
+            conn.commit()
+            cursor.close()
+            return cod_analise
+    except Exception as e:
+        print(f"Erro ao atualizar análise: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
 
 
 def obter_todos_detalhado() -> List[dict]:
@@ -143,4 +189,25 @@ def obter_ultimas_analises(limit: int = 10) -> List[dict]:
             ]
     except Exception as e:
         print(f"Erro ao obter últimas análises: {e}")
+        return []
+
+
+def obter_ultimas_por_status() -> List[dict]:
+    """Retorna a última atualização de cada tipo de status."""
+    try:
+        from data.sql.analise_processos_sql import ULTIMAS_POR_STATUS
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(ULTIMAS_POR_STATUS)
+            registros = cursor.fetchall()
+            cursor.close()
+            return [
+                {
+                    'tipo_status': r[0],
+                    'ultima_atualizacao': r[1]
+                }
+                for r in registros
+            ]
+    except Exception as e:
+        print(f"Erro ao obter últimas por status: {e}")
         return []

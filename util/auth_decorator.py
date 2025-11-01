@@ -24,6 +24,7 @@ def criar_sessao(request: Request, usuario: dict) -> None:
         # Remove senha da sessão por segurança
         usuario_sessao = usuario.copy()
         usuario_sessao.pop('senha', None)
+        usuario_sessao.pop('senha_usuario', None)
         request.session['usuario'] = usuario_sessao
 
 
@@ -36,7 +37,6 @@ def requer_autenticacao(perfis_autorizados: List[str] = None):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
-            # Encontra o objeto Request nos argumentos
             request = None
             for arg in args:
                 if isinstance(arg, Request):
@@ -57,13 +57,8 @@ def requer_autenticacao(perfis_autorizados: List[str] = None):
             # Verifica se o usuário está logado
             usuario = obter_usuario_logado(request)
             if not usuario:
-                # If the request looks like an API/XHR request (Accepts JSON or X-Requested-With),
-                # return a 401 JSON response instead of an HTML redirect so clients (fetch/ajax)
-                # can handle authentication flows without following redirects.
                 accept = request.headers.get('accept', '')
                 xrw = request.headers.get('x-requested-with', '')
-                # Prefer redirecting to the frontend login page (absolute URL) so browser
-                # navigations go to the Next.js app rather than to the backend /login route.
                 redirect_path = "/login?redirect=" + str(request.url.path)
                 redirect_url = FRONTEND_URL.rstrip('/') + redirect_path
                 if 'application/json' in accept or xrw.lower() == 'xmlhttprequest':
@@ -72,7 +67,6 @@ def requer_autenticacao(perfis_autorizados: List[str] = None):
                         'redirect': redirect_url
                     })
 
-                # Fallback: redirect to login for normal browser navigations
                 return RedirectResponse(
                     url=redirect_url,
                     status_code=status.HTTP_303_SEE_OTHER

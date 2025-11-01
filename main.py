@@ -14,7 +14,7 @@ app.add_middleware(
     SessionMiddleware, 
     secret_key=SECRET_KEY,
     max_age=28800,  # Sessão expira em 8 horas (28800 segundos)
-    same_site="lax",
+    same_site="lax",  # Agora funciona pois estamos usando proxy (same-origin)
     https_only=False  # Em produção, mude para True com HTTPS
 )
 

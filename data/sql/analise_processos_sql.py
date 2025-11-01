@@ -30,18 +30,36 @@ DELETE FROM Analise_Processos
 WHERE cod_analise = %s;
 """
 
+ATUALIZAR = """
+UPDATE Analise_Processos
+SET data_hora_inicio_analise = COALESCE(CAST(%s AS TIMESTAMP), data_hora_inicio_analise),
+    data_previsao_fim_analise = COALESCE(CAST(%s AS TIMESTAMP), data_previsao_fim_analise)
+WHERE cod_processo = %s
+RETURNING cod_analise, cod_status;
+"""
+
+ATUALIZAR_STATUS_EXISTENTE = """
+UPDATE Status
+SET tipo_status = %s,
+    data_hora_ultima_atualizacao = date_trunc('second', CURRENT_TIMESTAMP AT TIME ZONE 'America/Sao_Paulo')
+WHERE cod_status = %s;
+"""
+
 OBTER_TODOS_DETALHADO = """
 SELECT
     ap.cod_analise,
     ap.data_hora_inicio_analise,
     ap.data_previsao_fim_analise,
     ap.cod_processo,
+    p.codigo_edocs,
     p.numero_processo_florestal,
+    p.codigo_empreendimento,
     ap.cod_status,
     s.tipo_status,
     s.data_hora_ultima_atualizacao,
     ap.cod_usuario,
     u.nome_usuario,
+    u.role_usuario,
     ap.cod_campus,
     c.nome_campus,
     ap.cod_notificacao,
@@ -61,12 +79,15 @@ SELECT
     ap.data_hora_inicio_analise,
     ap.data_previsao_fim_analise,
     ap.cod_processo,
+    p.codigo_edocs,
     p.numero_processo_florestal,
+    p.codigo_empreendimento,
     ap.cod_status,
     s.tipo_status,
     s.data_hora_ultima_atualizacao,
     ap.cod_usuario,
     u.nome_usuario,
+    u.role_usuario,
     ap.cod_campus,
     c.nome_campus,
     ap.cod_notificacao,
@@ -106,4 +127,15 @@ LEFT JOIN Status s ON ap.cod_status = s.cod_status
 LEFT JOIN Usuario u ON ap.cod_usuario = u.cod_usuario
 ORDER BY ap.data_hora_inicio_analise DESC
 LIMIT %s;
+"""
+
+ULTIMAS_POR_STATUS = """
+SELECT 
+    s.tipo_status,
+    MAX(s.data_hora_ultima_atualizacao) as ultima_atualizacao
+FROM Analise_Processos ap
+INNER JOIN Status s ON ap.cod_status = s.cod_status
+WHERE s.tipo_status IS NOT NULL
+GROUP BY s.tipo_status
+ORDER BY s.tipo_status;
 """
