@@ -166,7 +166,10 @@ export default function CoordenadorPage() {
                             <button className="px-4 py-2 text-gray-700 border-b-2 border-blue-600 font-medium">
                                 Número de Processos
                             </button>
-                            <button className="px-4 py-2 text-gray-500 hover:text-gray-700">
+                            <button
+                                onClick={() => router.push('/coordenador/graficos')}
+                                className="px-4 py-2 text-gray-500 hover:text-gray-700"
+                            >
                                 Gráficos
                             </button>
                         </div>

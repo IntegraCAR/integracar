@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from data.repo import analise_processos_repo, status_repo
+from data.repo import analise_processos_repo, status_repo, notificacao_repo
 from util.auth_decorator import requer_autenticacao
 from fastapi.responses import JSONResponse
 from datetime import datetime, date
@@ -134,4 +134,122 @@ async def listar_status(request: Request, usuario_logado: dict = None):
         return JSONResponse(
             status_code=500,
             content={"error": f"Erro ao listar status: {str(e)}"}
+        )
+
+
+@router.post("/processo/{cod_processo}/notificacao")
+async def adicionar_notificacao_processo(
+    cod_processo: int,
+    request: Request
+):
+    """Adiciona uma notificação a um processo"""
+    try:
+        # Pegar o JSON bruto
+        body = await request.json()
+        
+        # Validar autenticação
+        from util.auth_decorator import obter_usuario_logado
+        usuario = obter_usuario_logado(request)
+        if not usuario or usuario.get('role_usuario') != 'coordenador':
+            return JSONResponse(
+                status_code=401,
+                content={"success": False, "message": "Não autorizado"}
+            )
+        
+        # Extrair motivo
+        motivo_notificacao = body.get('motivo_notificacao', '').strip()
+        
+        if not motivo_notificacao:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "message": "Motivo da notificação é obrigatório"}
+            )
+        
+        # Adicionar notificação
+        resultado = analise_processos_repo.adicionar_notificacao(
+            cod_processo=cod_processo,
+            motivo_notificacao=motivo_notificacao
+        )
+        
+        if resultado:
+            return JSONResponse(content={
+                "success": True,
+                "message": "Notificação adicionada com sucesso",
+                "cod_notificacao": resultado
+            })
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "message": "Erro ao adicionar notificação"}
+            )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "message": f"Erro: {str(e)}"}
+        )
+
+
+@router.delete("/processo/{cod_processo}")
+async def excluir_processo(
+    cod_processo: int,
+    request: Request
+):
+    """Exclui um processo do sistema"""
+    try:
+        # Validar autenticação
+        from util.auth_decorator import obter_usuario_logado
+        usuario = obter_usuario_logado(request)
+        if not usuario or usuario.get('role_usuario') != 'coordenador':
+            return JSONResponse(
+                status_code=401,
+                content={"success": False, "message": "Não autorizado"}
+            )
+        
+        # Excluir processo
+        resultado = analise_processos_repo.excluir(cod_processo)
+        
+        if resultado:
+            return JSONResponse(content={
+                "success": True,
+                "message": "Processo excluído com sucesso"
+            })
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "message": "Erro ao excluir processo"}
+            )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "message": f"Erro: {str(e)}"}
+        )
+
+
+@router.get("/coordenador/graficos")
+@requer_autenticacao(["coordenador"])
+async def get_graficos(request: Request, usuario_logado: dict = None):
+    """Retorna dados para os gráficos por campus, orientador e bolsista"""
+    try:
+        contagem_campus = analise_processos_repo.obter_contagem_por_campus()
+        contagem_orientador = analise_processos_repo.obter_contagem_por_orientador()
+        contagem_bolsista = analise_processos_repo.obter_contagem_por_bolsista()
+
+        # Serializar datetime para string
+        contagem_campus_serializado = serializar_datetime(contagem_campus)
+        contagem_orientador_serializado = serializar_datetime(contagem_orientador)
+        contagem_bolsista_serializado = serializar_datetime(contagem_bolsista)
+
+        return JSONResponse(content={
+            "usuario": usuario_logado,
+            "contagem_campus": contagem_campus_serializado,
+            "contagem_orientador": contagem_orientador_serializado,
+            "contagem_bolsista": contagem_bolsista_serializado
+        })
+    except Exception as e:
+        print(f"ERRO no endpoint /coordenador/graficos: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Erro ao buscar dados dos gráficos: {str(e)}"}
         )

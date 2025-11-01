@@ -23,8 +23,11 @@ export default function ProcessoPage() {
     const [usuario, setUsuario] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [editando, setEditando] = useState(false);
+    const [mostrarNotificacao, setMostrarNotificacao] = useState(false);
+    const [motivoNotificacao, setMotivoNotificacao] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         data_hora_inicio_analise: '',
@@ -151,6 +154,69 @@ export default function ProcessoPage() {
         }
     };
 
+    const handleAdicionarNotificacao = async () => {
+        if (!motivoNotificacao.trim()) {
+            setErrorMessage('Por favor, informe o motivo da notificação');
+            setShowErrorModal(true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/processo/${cod}/notificacao`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ motivo_notificacao: motivoNotificacao })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setShowSuccessModal(true);
+                setMostrarNotificacao(false);
+                setMotivoNotificacao('');
+                await carregarDados();
+            } else {
+                setErrorMessage(data.message || 'Erro ao adicionar notificação');
+                setShowErrorModal(true);
+            }
+        } catch (error) {
+            setErrorMessage('Erro ao adicionar notificação');
+            setShowErrorModal(true);
+        }
+    };
+
+    const handleExcluirProcesso = async () => {
+        try {
+            const response = await fetch(`/api/processo/${cod}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setShowDeleteModal(false);
+                setShowSuccessModal(true);
+                // Redirecionar para a lista de processos após 2 segundos
+                setTimeout(() => {
+                    router.push('/coordenador');
+                }, 2000);
+            } else {
+                setShowDeleteModal(false);
+                setErrorMessage(data.message || 'Erro ao excluir processo');
+                setShowErrorModal(true);
+            }
+        } catch (error) {
+            setShowDeleteModal(false);
+            setErrorMessage('Erro ao excluir processo');
+            setShowErrorModal(true);
+        }
+    };
+
     const nomeUsuario = usuario?.nome_usuario || "Usuário";
     const primeiraLetra = nomeUsuario.charAt(0).toUpperCase();
 
@@ -271,13 +337,60 @@ export default function ProcessoPage() {
                             Atualizar Status
                         </Button>
                         <Button
+                            onClick={() => setMostrarNotificacao(!mostrarNotificacao)}
                             variant="outline"
                             className="border-[#2563EB] text-[#2563EB] hover:bg-blue-50 px-6"
                         >
-                            Enviar Notificação
+                            {mostrarNotificacao ? 'Cancelar' : 'Adicionar Notificação'}
+                        </Button>
+                        <Button
+                            onClick={() => setShowDeleteModal(true)}
+                            variant="outline"
+                            className="border-red-600 text-red-600 hover:bg-red-50 px-6"
+                        >
+                            Excluir Processo
                         </Button>
                     </div>
                 </div>
+
+                {/* Formulário de Notificação */}
+                {mostrarNotificacao && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Nova Notificação</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <Label className="text-sm text-gray-600 mb-2 block">
+                                    Motivo da Notificação
+                                </Label>
+                                <textarea
+                                    value={motivoNotificacao}
+                                    onChange={(e) => setMotivoNotificacao(e.target.value)}
+                                    className="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    rows={4}
+                                    placeholder="Descreva o motivo da notificação..."
+                                />
+                            </div>
+                            <div className="flex gap-3">
+                                <Button
+                                    onClick={handleAdicionarNotificacao}
+                                    className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white px-6"
+                                >
+                                    Salvar Notificação
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        setMostrarNotificacao(false);
+                                        setMotivoNotificacao('');
+                                    }}
+                                    variant="outline"
+                                    className="px-6"
+                                >
+                                    Cancelar
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Data de atualização */}
                 <div className="text-sm text-gray-500 mb-6">
@@ -444,6 +557,42 @@ export default function ProcessoPage() {
                     </div>
                 </div>
             </main>
+
+            {/* Modal de Confirmação de Exclusão */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                Confirmar Exclusão
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                                Tem certeza que deseja excluir este processo? Esta ação não pode ser desfeita.
+                            </p>
+                            <div className="flex gap-3 w-full">
+                                <Button
+                                    onClick={handleExcluirProcesso}
+                                    className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                                >
+                                    Sim, Excluir
+                                </Button>
+                                <Button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    variant="outline"
+                                    className="flex-1"
+                                >
+                                    Cancelar
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Modal de Sucesso */}
             {showSuccessModal && (

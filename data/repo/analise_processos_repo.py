@@ -1,5 +1,6 @@
 from typing import Optional, List
 from data.model.analise_processos import AnaliseProcessos
+from data.model.notificacao import Notificacao
 from data.sql.analise_processos_sql import *
 from util.database import get_connection
 
@@ -188,8 +189,117 @@ def obter_ultimas_analises(limit: int = 10) -> List[dict]:
                 for r in registros
             ]
     except Exception as e:
-        print(f"Erro ao obter últimas análises: {e}")
+        print(f"Erro ao obter últimas por status: {e}")
         return []
+
+
+def excluir(cod_processo: int) -> bool:
+    """Exclui uma análise de processo do banco de dados."""
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM Analise_Processos WHERE cod_processo = %s",
+                (cod_processo,)
+            )
+            conn.commit()
+            cursor.close()
+            return True
+    except Exception as e:
+        print(f"Erro ao excluir análise: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def obter_contagem_por_campus() -> List[dict]:
+    """Retorna a contagem de processos por campus."""
+    try:
+        from data.sql.analise_processos_sql import CONTAGEM_POR_CAMPUS
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(CONTAGEM_POR_CAMPUS)
+            registros = cursor.fetchall()
+            cursor.close()
+            return [
+                {
+                    'nome_campus': r[0],
+                    'quantidade': r[1]
+                }
+                for r in registros
+            ]
+    except Exception as e:
+        print(f"Erro ao obter contagem por campus: {e}")
+        return []
+
+
+def obter_contagem_por_orientador() -> List[dict]:
+    """Retorna a contagem de processos por orientador."""
+    try:
+        from data.sql.analise_processos_sql import CONTAGEM_POR_ORIENTADOR
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(CONTAGEM_POR_ORIENTADOR)
+            registros = cursor.fetchall()
+            cursor.close()
+            return [
+                {
+                    'nome_usuario': r[0],
+                    'quantidade': r[1]
+                }
+                for r in registros
+            ]
+    except Exception as e:
+        print(f"Erro ao obter contagem por orientador: {e}")
+        return []
+
+
+def obter_contagem_por_bolsista() -> List[dict]:
+    """Retorna a contagem de processos por bolsista."""
+    try:
+        from data.sql.analise_processos_sql import CONTAGEM_POR_BOLSISTA
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(CONTAGEM_POR_BOLSISTA)
+            registros = cursor.fetchall()
+            cursor.close()
+            return [
+                {
+                    'nome_usuario': r[0],
+                    'quantidade': r[1]
+                }
+                for r in registros
+            ]
+    except Exception as e:
+        print(f"Erro ao obter contagem por bolsista: {e}")
+        return []
+
+
+def adicionar_notificacao(cod_processo: int, motivo_notificacao: str) -> Optional[int]:
+    """Adiciona uma notificação e atualiza a análise do processo com ela"""
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            
+            # 1. Criar a notificação
+            cursor.execute(
+                "INSERT INTO Notificacao (motivo_notificacao) VALUES (%s) RETURNING cod_notificacao",
+                (motivo_notificacao,)
+            )
+            cod_notificacao = cursor.fetchone()[0]
+            
+            # 2. Atualizar a análise do processo com a notificação
+            cursor.execute(
+                "UPDATE Analise_Processos SET cod_notificacao = %s WHERE cod_processo = %s",
+                (cod_notificacao, cod_processo)
+            )
+            
+            conn.commit()
+            cursor.close()
+            return cod_notificacao
+    except Exception as e:
+        print(f"Erro ao adicionar notificação: {e}")
+        return None
 
 
 def obter_ultimas_por_status() -> List[dict]:

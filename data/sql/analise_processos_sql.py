@@ -139,3 +139,30 @@ WHERE s.tipo_status IS NOT NULL
 GROUP BY s.tipo_status
 ORDER BY s.tipo_status;
 """
+
+CONTAGEM_POR_CAMPUS = """
+SELECT c.nome_campus, COUNT(*) AS quantidade
+FROM Analise_Processos ap
+LEFT JOIN Campus c ON ap.cod_campus = c.cod_campus
+WHERE c.nome_campus IS NOT NULL
+GROUP BY c.nome_campus
+ORDER BY quantidade DESC;
+"""
+
+CONTAGEM_POR_ORIENTADOR = """
+SELECT u.nome_usuario, COUNT(*) AS quantidade
+FROM Analise_Processos ap
+LEFT JOIN Usuario u ON ap.cod_usuario = u.cod_usuario
+WHERE u.role_usuario = 'orientador'
+GROUP BY u.nome_usuario
+ORDER BY quantidade DESC;
+"""
+
+CONTAGEM_POR_BOLSISTA = """
+SELECT u.nome_usuario, COUNT(*) AS quantidade
+FROM Analise_Processos ap
+LEFT JOIN Usuario u ON ap.cod_usuario = u.cod_usuario
+WHERE u.role_usuario = 'bolsista'
+GROUP BY u.nome_usuario
+ORDER BY quantidade DESC;
+"""
